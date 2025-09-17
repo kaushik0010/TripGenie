@@ -9,7 +9,7 @@ const ItinerarySchema = z.object({
     z.object({
       day: z.number(),
       title: z.string(),
-      activities: z.array(z.string()),
+      activities: z.array(z.string())
     })
   ),
 });
@@ -18,6 +18,8 @@ const ItinerarySchema = z.object({
 const EnrichRequestSchema = z.object({
   interests: z.string().min(10),
   itinerary: ItinerarySchema,
+  tripType: z.enum(['solo', 'family', 'group']),
+  members: z.coerce.number().optional(),
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid input', details: validation.error.flatten() }, { status: 400 });
     }
 
-    const { interests, itinerary } = validation.data;
+    const { interests, itinerary, tripType, members } = validation.data;
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `You are a local travel expert. A traveler has the following itinerary planned for ${itinerary.tripName}:
@@ -39,20 +41,21 @@ export async function POST(request: Request) {
     ITINERARY CONTEXT:
     ${JSON.stringify(itinerary.itinerary, null, 2)}
     ---
-    The traveler's main interests are: ${interests}.
+    The traveler's trip type is: ${tripType} ${tripType !== 'solo' ? `for ${members} people` : ''}.
+    Their main interests are: ${interests}.
 
-    Based on their interests and the existing plan, suggest 3 to 5 "hidden gems" or "off-the-beaten-path" activities or places they could visit.
+    Based on their interests, trip type, and the existing plan, suggest 3 to 5 "hidden gems" or "off-the-beaten-path" activities or places they could visit.
     These suggestions should NOT be duplicates of activities already mentioned in their itinerary.
     For each suggestion, provide a name and a brief, compelling reason.
 
     The response MUST be a valid JSON object following this structure:
-    {
-      "suggestions": [
-        {
-          "name": "Name of the place or activity",
-          "reason": "A brief explanation of why this fits their interests."
-        }
-      ]
+    { 
+      "suggestions": [ 
+        { 
+          "name": "Name of the place or activity", 
+          "reason": "A brief explanation of why this fits their interests." 
+        } 
+      ] 
     }
     Ensure the JSON is well-formed. Do not include any text, markdown, or formatting outside of the main JSON object.`;
 

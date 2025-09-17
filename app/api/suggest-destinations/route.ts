@@ -4,8 +4,12 @@ import * as z from 'zod';
 
 // Schema for backend validation
 const SuggestionRequestSchema = z.object({
-  duration: z.coerce.number().min(1),
-  budget: z.coerce.number().min(1),
+  sourceLocation: z.string().optional(),
+  tripType: z.enum(['solo', 'family', 'group']),
+  members: z.string().optional(),
+  duration: z.number(),
+  budget: z.number(),
+  currency: z.string(),
   interests: z.string().min(10),
 });
 
@@ -20,25 +24,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid input', details: validation.error.flatten() }, { status: 400 });
     }
 
-    const { duration, budget, interests } = validation.data;
+    const { duration, budget, currency, interests, sourceLocation, tripType, members } = validation.data;
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const prompt = `Based on the following travel preferences, suggest 5 potential destinations.
+    const prompt = `Based on the following travel preferences, suggest 5 potential destinations. The user's starting point is ${sourceLocation || 'not specified'}.
+    - Trip Type: ${tripType} trip ${tripType !== 'solo' ? `for ${members} people` : ''}
     - Trip Duration: ${duration} days
-    - Budget: Approximately ${budget} USD per person
+    - Total Budget: Approximately ${budget} ${currency} for the entire group of ${members || 1}
     - Main Interests: ${interests}
+
+    Provide a diverse list of suggestions suitable for their budget and trip type. Include a mix of:
+    1. A "hidden gem" or a nearby location relative to their starting point.
+    2. A popular destination within their country.
+    3. Suitable international locations.
 
     For each destination, provide a short, compelling reason why it's a good fit.
     The response MUST be a valid JSON object following this structure:
-    {
-      "suggestions": [
-        {
-          "destination": "City, Country",
-          "reason": "A brief explanation."
-        }
-      ]
-    }
-    Ensure the JSON is well-formed. Do not include any text, markdown, or formatting outside of the main JSON object.`;
+    { "suggestions": [ { "destination": "City, Country", "reason": "A brief explanation." } ] }
+    Ensure the JSON is well-formed.`;
+
 
     const result = await model.generateContent(prompt);
     const responseText = await result.response.text();
