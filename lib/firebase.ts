@@ -7,13 +7,12 @@ import {getAuth} from "firebase/auth"
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBcwdmofoZJXs_I8wn5hkt0ICQ9PLetGJI",
-  authDomain: "tripgenie-app.firebaseapp.com",
-  projectId: "tripgenie-app",
-  storageBucket: "tripgenie-app.firebasestorage.app",
-  messagingSenderId: "4277873851",
-  appId: "1:4277873851:web:ae5bb3c12fc1f344030d9e",
-  measurementId: "G-BFR94F5ESY"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
