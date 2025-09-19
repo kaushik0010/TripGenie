@@ -28,30 +28,7 @@ import {
 
 import { SparklesIcon, PaperAirplaneIcon, MapPinIcon, BanknotesIcon } from '@heroicons/react/24/solid';
 import { tripSchema, TripSchemaType } from '@/lib/validators';
-
-// Types for API responses
-type DestinationSuggestion = {
-  destination: string;
-  reason: string;
-};
-
-type Itinerary = {
-  tripName: string;
-  estimatedCost: {
-    travel: string;
-    accommodation: string;
-    food: string;
-    activities: string;
-    other: string;
-    total: string;
-  };
-  budgetAssessment: string;
-  itinerary: {
-    day: number;
-    title: string;
-    activities: string[];
-  }[];
-};
+import SaveTripButton from './SaveTripButton';
 
 type EnrichmentSuggestion = { name: string; reason: string; };
 
@@ -360,6 +337,7 @@ export default function TripForm() {
           <Card className="bg-slate-800/50 border-slate-700 text-slate-50">
             <CardHeader>
               <CardTitle>{itinerary.tripName}</CardTitle>
+              <SaveTripButton itinerary={itinerary} />
             </CardHeader>
             <CardContent>
               <div className="mb-6 p-4 rounded-lg border border-slate-700 bg-slate-900/50">
