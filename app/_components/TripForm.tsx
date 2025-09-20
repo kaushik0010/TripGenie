@@ -5,6 +5,9 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { isAxiosError } from 'axios';
 
+import { format } from "date-fns";
+import { CalendarIcon } from "@heroicons/react/24/solid";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +32,10 @@ import {
 import { SparklesIcon, PaperAirplaneIcon, MapPinIcon, BanknotesIcon } from '@heroicons/react/24/solid';
 import { tripSchema, TripSchemaType } from '@/lib/validators';
 import SaveTripButton from './SaveTripButton';
+import ItineraryDisplay from './ItineraryDisplay';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { Calendar } from '@/components/ui/calendar';
 
 type EnrichmentSuggestion = { name: string; reason: string; };
 
@@ -51,6 +58,7 @@ export default function TripForm() {
       duration: 7,
       budget: 1500,
       currency: 'INR',
+      startDate: new Date(),
       interests: 'Exploring ancient ruins, trying street food, and relaxing on scenic beaches.',
     },
   });
@@ -161,7 +169,42 @@ export default function TripForm() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Trip Start Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              
+                              className={cn(
+                                "w-full pl-3 text-left font-normal bg-slate-700 border-slate-600 hover:bg-slate-600",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 bg-slate-800 text-white border-slate-700" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => date < new Date() || date > new Date("2100-01-01")}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="tripType"
@@ -231,7 +274,8 @@ export default function TripForm() {
                           <FormLabel>Total Budget</FormLabel>
                           <FormControl>
                             <Input 
-                            type="number" {...field} 
+                            type="number" 
+                            {...field} 
                             className="bg-slate-700 border-slate-600" />
                           </FormControl>
                           <FormMessage />
@@ -354,7 +398,11 @@ export default function TripForm() {
               </div>
 
               <div className="space-y-6">
-                <pre className="whitespace-pre-wrap text-sm bg-slate-900/50 p-4 rounded-md">{JSON.stringify(itinerary.itinerary, null, 2)}</pre>
+                <ItineraryDisplay 
+                itineraryData={itinerary} 
+                sourceLocation={form.getValues('sourceLocation')}
+                destination={form.getValues('destination')}
+                />
                 <div className="pt-6 border-t border-slate-700">
                   {enrichments.length > 0 ? (
                     <div>

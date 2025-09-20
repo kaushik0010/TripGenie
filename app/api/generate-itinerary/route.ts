@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as z from 'zod';
 import { convertCurrency, getDestinationCurrency } from '@/lib/currency';
+import { sanitizeInput } from '@/lib/sanitize';
 
 // Define the schema for input validation on the backend
 const ItineraryRequestSchema = z.object({
@@ -10,6 +11,7 @@ const ItineraryRequestSchema = z.object({
   duration: z.coerce.number().min(1),
   budget: z.coerce.number().min(1),
   currency: z.string(),
+  startDate: z.string().datetime(),
   interests: z.string().min(1),
   tripType: z.enum(['solo', 'family', 'group']),
   members: z.coerce.number().optional(),
@@ -22,6 +24,12 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
+    if (body.destination) body.destination = sanitizeInput(body.destination);
+    if (body.sourceLocation) body.sourceLocation = sanitizeInput(body.sourceLocation);
+    if (body.currency) body.currency = sanitizeInput(body.currency);
+    if (body.interests) body.interests = sanitizeInput(body.interests);
+    if (body.startDate) body.startDate = sanitizeInput(body.startDate);
+
     // 1. Validate the incoming request body with Zod
     const validation = ItineraryRequestSchema.safeParse(body);
 
@@ -33,7 +41,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { destination, duration, budget, interests, sourceLocation, tripType, members, currency } = validation.data;
+    const { destination, duration, budget, interests, sourceLocation, tripType, members, currency, startDate } = validation.data;
 
     let convertedBudget = null;
     let destinationCurrency = await getDestinationCurrency(destination);
@@ -46,6 +54,7 @@ export async function POST(request: Request) {
 
     const prompt = `You are an expert travel planner, TripGenie. A user wants to plan a trip to ${destination} from ${sourceLocation || 'an unspecified location'}.
     Here are their preferences:
+    - Trip Start Date: ${new Date(startDate).toDateString()}
     - Trip Type: ${tripType} trip ${tripType !== 'solo' ? `for ${members} people` : ''}
     - Trip Duration: ${duration} days
     - Total Budget: Approximately ${budget} ${currency} for the entire group of ${members || 1}.
@@ -53,6 +62,7 @@ export async function POST(request: Request) {
     - Main Interests: ${interests}
 
     Generate a detailed day-by-day itinerary with activities suitable for this trip type (e.g., kid-friendly for family, nightlife for group).
+    As part of the 'travel' key in the 'estimatedCost' object, suggest the best modes of transport (e.g., flights, trains, buses) from the source to the destination and provide an estimated travel time.
     Crucially, you must provide a cost estimation and budget assessment.
     **IMPORTANT: The 'estimatedCost' and 'budgetAssessment' MUST be for the TOTAL number of members (${members || 1}), NOT per person.**
 

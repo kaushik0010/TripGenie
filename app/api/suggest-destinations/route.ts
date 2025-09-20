@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as z from 'zod';
+import { sanitizeInput } from '@/lib/sanitize';
 
 // Schema for backend validation
 const SuggestionRequestSchema = z.object({
   sourceLocation: z.string().optional(),
   tripType: z.enum(['solo', 'family', 'group']),
-  members: z.string().optional(),
+  members: z.coerce.number().optional(),
   duration: z.number(),
   budget: z.number(),
   currency: z.string(),
@@ -18,6 +19,11 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    if (body.sourceLocation) body.sourceLocation = sanitizeInput(body.sourceLocation);
+    if (body.currency) body.currency = sanitizeInput(body.currency);
+    if (body.interests) body.interests = sanitizeInput(body.interests);
+
     const validation = SuggestionRequestSchema.safeParse(body);
 
     if (!validation.success) {

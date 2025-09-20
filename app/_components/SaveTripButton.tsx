@@ -17,10 +17,17 @@ export default function SaveTripButton({ itinerary }: { itinerary: Itinerary }) 
     setError(null);
 
     try {
-      await axios.post('/api/trips', {
-        itinerary,
-        uid: user.uid,
-      });
+      const token = await user.getIdToken();
+
+      await axios.post('/api/trips', 
+        { itinerary },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        },
+      );
+      
       setIsSaved(true);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to save trip.');

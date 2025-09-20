@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as z from 'zod';
+import { sanitizeInput } from '@/lib/sanitize';
 
 // Define a detailed schema for the itinerary object to ensure data integrity
 const ItinerarySchema = z.object({
@@ -27,6 +28,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    if (body.interests) body.interests = sanitizeInput(body.interests);
+    
     const validation = EnrichRequestSchema.safeParse(body);
 
     if (!validation.success) {

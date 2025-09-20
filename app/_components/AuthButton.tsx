@@ -4,6 +4,7 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
+import Link from 'next/link';
 
 export default function AuthButton() {
   const { user, loading } = useAuth();
@@ -32,6 +33,9 @@ export default function AuthButton() {
   
   return user ? (
     <div className="flex items-center gap-4">
+      <Link href="/my-trips" className="text-sm text-slate-300 hover:text-cyan-400 transition-colors">
+        My Trips
+      </Link>
       <p className="text-sm text-slate-300">Welcome, {user.displayName?.split(' ')[0]}</p>
       <Button onClick={handleSignOut} variant="outline" className="border-red-500 text-red-500 hover:bg-red-500/10 hover:text-red-400 cursor-pointer">
         Sign Out

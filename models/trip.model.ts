@@ -2,39 +2,40 @@ import mongoose, { Schema, Document, models } from 'mongoose';
 import { IUser } from './user.model';
 
 export interface ITrip extends Document {
-  user: IUser['_id'];
-  tripName: string;
-  estimatedCost: object;
-  budgetAssessment: string;
-  itinerary: object[];
-  createdAt: Date;
+    _id: mongoose.Schema.Types.ObjectId;
+    user: IUser['_id'];
+    tripName: string;
+    estimatedCost: object;
+    budgetAssessment: string;
+    itinerary: object[];
+    createdAt: Date;
 }
 
 const tripSchema: Schema<ITrip> = new Schema({
-    user: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'User', 
-        required: true 
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-    tripName: { 
-        type: String, 
-        required: true 
+    tripName: {
+        type: String,
+        required: true
     },
-    estimatedCost: { 
-        type: Object, 
-        required: true 
+    estimatedCost: {
+        type: Object,
+        required: true
     },
-    budgetAssessment: { 
-        type: String, 
-        required: true 
+    budgetAssessment: {
+        type: String,
+        required: true
     },
-    itinerary: { 
-        type: [Object], 
-        required: true 
+    itinerary: {
+        type: [Object],
+        required: true
     },
-    createdAt: { 
-        type: Date, 
-        default: Date.now 
+    createdAt: {
+        type: Date,
+        default: Date.now
     },
 })
 

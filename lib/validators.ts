@@ -8,6 +8,7 @@ export const tripSchema = z.object({
   duration: z.string().min(1, { message: "Please enter a duration." }).transform(Number).pipe(z.number().min(1, "Trip must be at least 1 day.")),
   budget: z.string().min(1, { message: "Please enter a budget." }).transform(Number).pipe(z.number().min(50, "Budget must be at least $50.")),
   currency: z.string(),
+  startDate: z.coerce.date(),
   interests: z.string().min(10, "Please describe your interests in a bit more detail."),
 })
 .refine((data) => {
