@@ -15,6 +15,7 @@ const ItineraryRequestSchema = z.object({
   interests: z.string().min(1),
   tripType: z.enum(['solo', 'family', 'group']),
   members: z.coerce.number().optional(),
+  language: z.string(),
 });
 
 // Initialize the Google Generative AI client with the API key
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { destination, duration, budget, interests, sourceLocation, tripType, members, currency, startDate } = validation.data;
+    const { destination, duration, budget, interests, sourceLocation, tripType, members, currency, startDate, language } = validation.data;
 
     let convertedBudget = null;
     let destinationCurrency = await getDestinationCurrency(destination);
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
     ${convertedBudget ? `- Destination Local Currency Equivalent: Approximately ${convertedBudget} ${destinationCurrency} for the entire group.` : ''}
     - Main Interests: ${interests}
 
-    Generate a detailed day-by-day itinerary with activities suitable for this trip type (e.g., kid-friendly for family, nightlife for group).
+    Generate a detailed day-by-day itinerary with activities suitable for this trip type (e.g., kid-friendly for family, nightlife for group) in the following language: ${language}.
     As part of the 'travel' key in the 'estimatedCost' object, suggest the best modes of transport (e.g., flights, trains, buses) from the source to the destination and provide an estimated travel time.
     Crucially, you must provide a cost estimation and budget assessment.
     **IMPORTANT: The 'estimatedCost' and 'budgetAssessment' MUST be for the TOTAL number of members (${members || 1}), NOT per person.**

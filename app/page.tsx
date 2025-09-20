@@ -1,11 +1,13 @@
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import TripForm from "./_components/TripForm";
 import AuthButton from "./_components/AuthButton";
+import LanguageSwitcher from "./_components/LanguageSwitcher";
 
 export default function Home() {
   return (
     <>
-      <header className="absolute top-0 right-0 p-6">
+      <header className="absolute top-0 right-0 p-6 flex justify-between gap-4">
+        <LanguageSwitcher />
         <AuthButton />
       </header>
       <main className="flex min-h-screen w-full flex-col items-center justify-center p-8">

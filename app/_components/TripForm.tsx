@@ -36,6 +36,7 @@ import ItineraryDisplay from './ItineraryDisplay';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
+import { useTranslation } from 'react-i18next';
 
 type EnrichmentSuggestion = { name: string; reason: string; };
 
@@ -47,6 +48,9 @@ export default function TripForm() {
   const [suggestions, setSuggestions] = useState<DestinationSuggestion[]>([]);
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [enrichments, setEnrichments] = useState<EnrichmentSuggestion[]>([]);
+
+  const { t, i18n } = useTranslation()
+  const currentLanguage = i18n.language;
 
   const form = useForm<TripSchemaType>({
     resolver: zodResolver(tripSchema) as any,
@@ -72,14 +76,16 @@ export default function TripForm() {
     setItinerary(null);
     setEnrichments([]);
 
+    const payload = { ...data, language: currentLanguage };
+
     try {
       if (!data.destination) {
         // AI Suggestion Mode
-        const { data: result } = await axios.post('/api/suggest-destinations', data);
+        const { data: result } = await axios.post('/api/suggest-destinations', payload);
         setSuggestions(result.suggestions);
       } else {
         // Itinerary Generation Mode
-        const { data: result } = await axios.post('/api/generate-itinerary', data);
+        const { data: result } = await axios.post('/api/generate-itinerary', payload);
         setItinerary(result);
       }
     } catch (err: any) {
@@ -126,7 +132,7 @@ export default function TripForm() {
     <div className="w-full max-w-2xl">
       <Card className="bg-slate-800/50 border-slate-700 text-slate-50">
         <CardHeader>
-          <CardTitle>Plan Your Next Adventure</CardTitle>
+          <CardTitle>{t('pageTitle') || 'Plan Your Next Adventure'}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
