@@ -18,7 +18,7 @@ export default function Home() {
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-violet-500">
             TripGenie
           </h1>
-          <p className="max-w-xl text-lg text-slate-400">
+          <p className="max-w-xl text-lg text-slate-400 mb-4">
             Your personal AI travel assistant. Tell us your travel dreams, and we'll craft the perfect itinerary.
           </p>
         </div>

@@ -132,7 +132,7 @@ export default function TripForm() {
     <div className="w-full max-w-2xl">
       <Card className="bg-slate-800/50 border-slate-700 text-slate-50">
         <CardHeader>
-          <CardTitle>{t('pageTitle') || 'Plan Your Next Adventure'}</CardTitle>
+          <CardTitle>{t('pageTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -386,7 +386,7 @@ export default function TripForm() {
         {itinerary && (
           <Card className="bg-slate-800/50 border-slate-700 text-slate-50">
             <CardHeader>
-              <CardTitle>{itinerary.tripName}</CardTitle>
+              <CardTitle className='mb-4'>{itinerary.tripName}</CardTitle>
               <SaveTripButton itinerary={itinerary} />
             </CardHeader>
             <CardContent>

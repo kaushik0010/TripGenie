@@ -22,15 +22,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(false);
 
             if (user) {
-                try {
-                    await axios.post('/api/users', {
-                        uid: user.uid,
-                        email: user.email,
-                        name: user.displayName,
-                    });
-                } catch (error) {
-                    console.error("Failed to sync user to MongoDB", error);
+                const hasSynced = sessionStorage.getItem('user_synced');
+
+                if(!hasSynced) {
+                    try {
+                        await axios.post('/api/users', {
+                            uid: user.uid,
+                            email: user.email,
+                            name: user.displayName,
+                        });
+                        sessionStorage.setItem('user_synced', 'true');
+                    } catch (error) {
+                        console.error("Failed to sync user to MongoDB", error);
+                    }
                 }
+            } else {
+                sessionStorage.removeItem('user_synced');
             }
         });
 

@@ -3,8 +3,10 @@ import { IUser } from './user.model';
 
 export interface ITrip extends Document {
     _id: mongoose.Schema.Types.ObjectId;
-    user: IUser['_id'];
+    user: IUser;
     tripName: string;
+    sourceLocation?: string;
+    destination?: string;
     estimatedCost: object;
     budgetAssessment: string;
     itinerary: object[];
@@ -20,6 +22,12 @@ const tripSchema: Schema<ITrip> = new Schema({
     tripName: {
         type: String,
         required: true
+    },
+    sourceLocation: { 
+        type: String 
+    },
+    destination: { 
+        type: String 
     },
     estimatedCost: {
         type: Object,

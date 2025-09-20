@@ -1,10 +1,12 @@
-import admin from 'firebase-admin'
+import admin from 'firebase-admin';
 
-const serviceAccount = require(process.env.FIREBASE_ADMIN_PRIVATE_KEY_PATH!);
+// Directly import the service account key from the root
+import serviceAccount from '../serviceAccountKey.json';
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    // Cast the imported JSON to the correct type
+    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   });
 }
 

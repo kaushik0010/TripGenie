@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const prompt = `You are an expert travel planner, TripGenie. A user wants to plan a trip to ${destination} from ${sourceLocation || 'an unspecified location'}.
+    const prompt = `You are an expert travel planner, TripGenie, with deep local knowledge. A user wants to plan a trip to ${destination} from ${sourceLocation || 'an unspecified location'}.
     Here are their preferences:
     - Trip Start Date: ${new Date(startDate).toDateString()}
     - Trip Type: ${tripType} trip ${tripType !== 'solo' ? `for ${members} people` : ''}
@@ -63,8 +63,16 @@ export async function POST(request: Request) {
     - Main Interests: ${interests}
 
     Generate a detailed day-by-day itinerary with activities suitable for this trip type (e.g., kid-friendly for family, nightlife for group) in the following language: ${language}.
-    As part of the 'travel' key in the 'estimatedCost' object, suggest the best modes of transport (e.g., flights, trains, buses) from the source to the destination and provide an estimated travel time.
-    Crucially, you must provide a cost estimation and budget assessment.
+    **IMPORTANT: Act like a local expert and optimize the plan to avoid peak crowd times.**
+    - If a day falls on a weekend (Saturday or Sunday), prioritize visiting popular, crowded attractions on the surrounding weekdays instead.
+    - Suggest less crowded alternatives or "hidden gems" for the weekend days to ensure a more enjoyable experience.
+
+    For the 'travel' section of the response, please follow these critical instructions:
+    1.  **Prioritize Efficiency:** Find the most **time-efficient and direct route**, even if it involves local transport.
+    2.  **Think Like a Local:** Do not just default to the most popular route through major hubs. Consider local buses, auto-rickshaws, ferry services, or smaller state highways that a local expert would recommend.
+    3.  **Provide Options:** Briefly mention one or two transport options (e.g., "Take a local bus from Dighi to Borli Panchtan, then an auto-rickshaw to Diveagar.").
+
+    Crucially, you must also provide a cost estimation and budget assessment.
     **IMPORTANT: The 'estimatedCost' and 'budgetAssessment' MUST be for the TOTAL number of members (${members || 1}), NOT per person.**
 
     The response MUST be a valid JSON object following this exact structure:

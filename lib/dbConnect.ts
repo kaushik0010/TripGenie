@@ -29,7 +29,6 @@ async function dbConnect(): Promise<Mongoose> {
     
     try {
         cached.conn = await cached.promise;
-        console.log("Database connection successful!");
     } catch (e) {
         cached.promise = null;
         throw e;
