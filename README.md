@@ -55,7 +55,7 @@ TripGenie is built on a modern, scalable, and secure tech stack, leveraging the 
 
 ### Step 1: Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/kaushik0010/TripGenie.git
 cd tripgenie
 ```
 
