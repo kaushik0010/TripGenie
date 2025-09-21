@@ -61,7 +61,6 @@ export async function POST(request: Request) {
     - Total Budget: Approximately ${budget} ${currency} for the entire group of ${members || 1}.
     ${convertedBudget ? `- Destination Local Currency Equivalent: Approximately ${convertedBudget} ${destinationCurrency} for the entire group.` : ''}
     - Main Interests: ${interests}
-
     Generate a detailed day-by-day itinerary with activities suitable for this trip type (e.g., kid-friendly for family, nightlife for group) in the following language: ${language}.
     **IMPORTANT: Act like a local expert and optimize the plan to avoid peak crowd times.**
     - If a day falls on a weekend (Saturday or Sunday), prioritize visiting popular, crowded attractions on the surrounding weekdays instead.

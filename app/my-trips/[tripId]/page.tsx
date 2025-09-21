@@ -6,17 +6,12 @@ import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
 import ItineraryDisplay from '@/app/_components/ItineraryDisplay';
 
-interface ITrip extends Itinerary {
-  sourceLocation?: string;
-  destination?: string;
-}
-
 export default function TripDetailPage() {
   const { user } = useAuth();
   const params = useParams();
   const { tripId } = params;
   
-  const [trip, setTrip] = useState<ITrip | null>(null);
+  const [trip, setTrip] = useState<Itinerary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

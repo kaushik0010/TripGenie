@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 
-export default function SaveTripButton({ itinerary }: { itinerary: Itinerary }) {
+export default function SaveTripButton({ itinerary, sourceLocation, destination }: { itinerary: Itinerary, sourceLocation?: string, destination?: string }) {
   const { user } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -20,7 +20,10 @@ export default function SaveTripButton({ itinerary }: { itinerary: Itinerary }) 
       const token = await user.getIdToken();
 
       await axios.post('/api/trips', 
-        { itinerary },
+        { itinerary,
+          sourceLocation,
+          destination,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`

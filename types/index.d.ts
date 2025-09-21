@@ -7,6 +7,8 @@ type DestinationSuggestion = {
 
 type Itinerary = {
   tripName: string;
+  sourceLocation?: string;
+  destination?: string;
   estimatedCost: {
     travel: string;
     accommodation: string;

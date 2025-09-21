@@ -25,7 +25,7 @@ export default function BookingSimulation({ itineraryData }: { itineraryData: It
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full bg-green-600 hover:bg-green-700 text-lg py-6">
+        <Button className="w-full bg-green-600 hover:bg-green-700 text-lg py-6 cursor-pointer">
           Proceed to Book Now
         </Button>
       </DialogTrigger>
@@ -43,7 +43,7 @@ export default function BookingSimulation({ itineraryData }: { itineraryData: It
         <DialogFooter>
           <Button 
             onClick={() => setShowConfirmation(true)}
-            className="w-full bg-cyan-600 hover:bg-cyan-700"
+            className="w-full bg-cyan-600 hover:bg-cyan-700 cursor-pointer"
           >
             Confirm & Proceed to Pay
           </Button>

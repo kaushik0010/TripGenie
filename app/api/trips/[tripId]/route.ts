@@ -5,7 +5,7 @@ import Trip from '@/models/trip.model';
 
 export async function GET(request: NextRequest, { params }: { params: { tripId: string } }) {
   try {
-    const { tripId } = params;
+    const { tripId } = await params;
     
     // Verify user token
     const authorization = request.headers.get('Authorization');

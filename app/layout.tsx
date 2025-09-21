@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: "TripGenie",
   description: "Your personal AI travel assistant",
+  manifest: '/manifest.json'
 };
 
 export default function RootLayout({

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const uid = decodedToken.uid;
 
-    const { itinerary } = await request.json();
+    const { itinerary, sourceLocation, destination } = await request.json();
 
     if (!itinerary) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -31,6 +31,8 @@ export async function POST(request: Request) {
     // Create a new Trip document
     const newTrip = new Trip({
       user: user._id,
+      sourceLocation: sourceLocation,
+      destination: destination,
       ...itinerary,
     });
 
@@ -65,6 +67,7 @@ export async function GET(request: NextRequest) {
     const user = await User.findOne({ uid: uid }).populate({
       path: 'savedTrips',
       model: Trip,
+      select: 'tripName createdAt',
       options: { sort: { createdAt: -1 } }
     });
 

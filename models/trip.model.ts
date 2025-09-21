@@ -47,6 +47,6 @@ const tripSchema: Schema<ITrip> = new Schema({
     },
 })
 
-const Trip = (models.User as mongoose.Model<ITrip>) || mongoose.model<ITrip>("Trip", tripSchema);
+const Trip = (models.Trip as mongoose.Model<ITrip>) || mongoose.model<ITrip>("Trip", tripSchema);
 
 export default Trip;

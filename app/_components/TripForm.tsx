@@ -387,7 +387,11 @@ export default function TripForm() {
           <Card className="bg-slate-800/50 border-slate-700 text-slate-50">
             <CardHeader>
               <CardTitle className='mb-4'>{itinerary.tripName}</CardTitle>
-              <SaveTripButton itinerary={itinerary} />
+              <SaveTripButton
+                itinerary={itinerary} 
+                sourceLocation={form.getValues('sourceLocation')}
+                destination={form.getValues('destination')} 
+              />
             </CardHeader>
             <CardContent>
               <div className="mb-6 p-4 rounded-lg border border-slate-700 bg-slate-900/50">
