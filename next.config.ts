@@ -15,7 +15,7 @@ const withPWAConfig = withPWA({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
+  disable: false,
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/maps\.googleapis\.com\/.*/i,
@@ -26,10 +26,17 @@ const withPWAConfig = withPWA({
           maxEntries: 10,
           maxAgeSeconds: 60 * 60 * 24 * 30,
         },
+        plugins: [
+          {
+            cacheableResponse: {
+              statuses: [0, 200], 
+            },
+          },
+        ],
       },
     },
     {
-      urlPattern: /\/api\/trips/,
+      urlPattern: ({ url }: {url: URL}) => url.pathname.startsWith('/api/trips'),
       handler: 'NetworkFirst', 
       options: {
         cacheName: 'api-trips-cache',
@@ -38,6 +45,13 @@ const withPWAConfig = withPWA({
           maxAgeSeconds: 60 * 60 * 24 * 7, 
         },
         networkTimeoutSeconds: 10, 
+        plugins: [
+          {
+            cacheableResponse: {
+              statuses: [0, 200], 
+            },
+          },
+        ],
       },
     },
   ],
