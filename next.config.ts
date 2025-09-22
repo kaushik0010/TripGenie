@@ -1,60 +1,52 @@
 import type { NextConfig } from "next";
-import withPWA from "next-pwa"
+import nextPWA from "@ducanh2912/next-pwa";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  typescript: {
-    ignoreBuildErrors: true
-  },
-  eslint: {
-    ignoreDuringBuilds: true
-  },
-};
-
-const withPWAConfig = withPWA({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: false,
+const withPWA = nextPWA({
+  dest: "public",                    
+  register: true,                    
+  skipWaiting: true,                 
+  disable: process.env.NODE_ENV === "development", 
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/maps\.googleapis\.com\/.*/i,
-      handler: 'CacheFirst',
+      handler: "CacheFirst",
       options: {
-        cacheName: 'google-maps-cache',
+        cacheName: "google-maps-cache",
         expiration: {
           maxEntries: 10,
-          maxAgeSeconds: 60 * 60 * 24 * 30,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
         },
-        plugins: [
-          {
-            cacheableResponse: {
-              statuses: [0, 200], 
-            },
-          },
-        ],
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
       },
     },
     {
-      urlPattern: ({ url }: {url: URL}) => url.pathname.startsWith('/api/trips'),
-      handler: 'NetworkFirst', 
+      urlPattern: ({ url }: { url: URL }) => url.pathname.startsWith("/api/trips"),
+      handler: "NetworkFirst",
       options: {
-        cacheName: 'api-trips-cache',
+        cacheName: "api-trips-cache",
         expiration: {
           maxEntries: 10,
-          maxAgeSeconds: 60 * 60 * 24 * 7, 
+          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
         },
-        networkTimeoutSeconds: 10, 
-        plugins: [
-          {
-            cacheableResponse: {
-              statuses: [0, 200], 
-            },
-          },
-        ],
+        networkTimeoutSeconds: 10,
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
       },
     },
   ],
-});
+} as any);
 
-export default withPWAConfig(nextConfig);
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+};
+
+export default withPWA(nextConfig);
